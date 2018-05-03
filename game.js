@@ -1,4 +1,3 @@
-var myVar;
 operation();
 
 function operation() {
@@ -6,18 +5,24 @@ function operation() {
 }
 
 document.onkeydown = function(e) {
+    var blueBoxOffset = $("#blueBox").offset();
+    var moveLength = 10;
     switch (e.keyCode) {
         case 37:
-        $("#blueBox").css({top: 200, left: 200, position:'absolute'});
+            var moveLeft = blueBoxOffset.left - moveLength;
+            $("#blueBox").css({top: blueBoxOffset.top, left: moveLeft, position: 'absolute'});
             break;
         case 38:
-            alert('up');
+            var moveUp = blueBoxOffset.top - moveLength;
+            $("#blueBox").css({top: moveUp, left: blueBoxOffset.left, position: 'absolute'});
             break;
         case 39:
-            alert('right');
+            var moveRight = blueBoxOffset.left + moveLength;
+            $("#blueBox").css({top: blueBoxOffset.top, left: moveRight, position: 'absolute'});
             break;
         case 40:
-            alert('down');
+            var moveDown = blueBoxOffset.top + moveLength;
+            $("#blueBox").css({top: moveDown, left: blueBoxOffset.left, position: 'absolute'});
             break;
     }
 };
