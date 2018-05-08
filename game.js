@@ -93,7 +93,8 @@ var playerYPos = 120;
       },
       stop : function() {
         clearInterval(this.interval);
-      }
+      },
+      velocity : [1, -1, 0]
   }
 
 
@@ -123,6 +124,7 @@ function animateDiv(){
   function updateGameArea()
   {
 
+    // Checks if player has died
     if (player.crashWith(enemy))
     {
 
@@ -134,8 +136,6 @@ function animateDiv(){
             // makes myGameArea.keys empty so player velocity is not carried over to next life
             myGameArea.keys = [];
         }
-
-        //myGameArea.stop();
 
         // Checks if r was pressed, if it is player position is reset to original position
         if (myGameArea.keys && myGameArea.keys[82]) {
@@ -165,27 +165,48 @@ function animateDiv(){
             coin.y = newCoinY;
 
         }
-    myGameArea.clear();
-    myGameArea.frameNo += 1;
-    player.speedX = 0;
-    player.speedY = 0;
-    enemy.x += Math.floor((Math.random() * -0.5) + 0.5);
-    enemy.y += Math.floor((Math.random() * -0.5) + 0.5);
+        if (myGameArea.frameNo % 100 == 0) {
+            var aiSpeedX = Math.floor((Math.random() * 3));
+            var aiSpeedY = Math.floor((Math.random() * 3));
+            enemy.speedX = myGameArea.velocity[aiSpeedX];
+            enemy.speedY = myGameArea.velocity[aiSpeedY];
+        }
+        myGameArea.clear();
+        myGameArea.frameNo += 1;
+        player.speedX = 0;
+        player.speedY = 0;
 
-    // Are the boundaries of the player
-    var xBoundary = myGameArea.canvas.width - player.width;
-    var yBoundary = myGameArea.canvas.height - player.height;
+        var xAIBoundary = myGameArea.canvas.width - enemy.width;
+        var yAIBoundary = myGameArea.canvas.height - enemy.height;
 
-    // Checks for user input
-    if (myGameArea.keys && myGameArea.keys[37] && player.x >= 0) {player.speedX = -1; }
-    if (myGameArea.keys && myGameArea.keys[39] && player.x <= xBoundary) {player.speedX = 1; }
-    if (myGameArea.keys && myGameArea.keys[38] && player.y >= 0) {player.speedY = -1; }
-    if (myGameArea.keys && myGameArea.keys[40] && player.y <= yBoundary) {player.speedY = 1; }
-    player.newPos();
-    coin.update();
-    player.update();
-    enemy.update();
-    scoreBoard.text= "Score: " + myGameArea.score;
-    scoreBoard.update();
+        if (enemy.x == xAIBoundary) {
+            enemy.speedX = -1;
+        }
+        if (enemy.x == 0) {
+            enemy.speedX = 1;
+        }
+        if (enemy.y == yAIBoundary) {
+            enemy.speedY = -1;
+        }
+        if (enemy.y == 0) {
+            enemy.speedY = 1;
+        }
+
+        // Are the boundaries of the player
+        var xBoundary = myGameArea.canvas.width - player.width;
+        var yBoundary = myGameArea.canvas.height - player.height;
+
+        // Checks for user input
+        if (myGameArea.keys && myGameArea.keys[37] && player.x >= 0) {player.speedX = -1; }
+        if (myGameArea.keys && myGameArea.keys[39] && player.x <= xBoundary) {player.speedX = 1; }
+        if (myGameArea.keys && myGameArea.keys[38] && player.y >= 0) {player.speedY = -1; }
+        if (myGameArea.keys && myGameArea.keys[40] && player.y <= yBoundary) {player.speedY = 1; }
+        player.newPos();
+        enemy.newPos();
+        coin.update();
+        player.update();
+        enemy.update();
+        scoreBoard.text= "Score: " + myGameArea.score;
+        scoreBoard.update();
     }
   }
