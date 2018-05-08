@@ -1,4 +1,4 @@
-var player, enemy, coin, score;
+var player, enemy, coin, score, mySound;
 
 // Creates canvas
 var mainCanvas = document.createElement("canvas");
@@ -10,6 +10,7 @@ var playerYPos = 120;
   {
     myGameArea.start();
     player = new component(20, 20, "green", playerXPos, playerYPos);
+    mySound = new sound("BFM.mp3");
     enemy = new component(25, 25, "red", 20, 150);
     coin = new component(10, 10, "yellow", 10, 200);
     scoreBoard = new component("30px", "Consolas", "black", 280, 40, "text");
@@ -150,6 +151,7 @@ function animateDiv(){
     {
         // Detects player collision with coin
         if (player.crashWith(coin)) {
+            mySound.play();
             myGameArea.score = myGameArea.score + 1; // Increments score if collision
 
             // Gets boundary of where coin can spawn
@@ -210,3 +212,18 @@ function animateDiv(){
         scoreBoard.update();
     }
   }
+
+  function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    }
+    this.stop = function(){
+        this.sound.pause();
+    }
+}
