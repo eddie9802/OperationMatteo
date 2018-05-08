@@ -3,26 +3,29 @@ var player, enemy, coin, score;
 // Creates canvas
 var mainCanvas = document.createElement("canvas");
 
+var playerXPos = 10;
+var playerYPos = 120;
+
   function startGame()
   {
     myGameArea.start();
-    player = new component(20, 20, "green", 10, 120);
+    player = new component(20, 20, "green", playerXPos, playerYPos);
     enemy = new component(25, 25, "red", 20, 150);
     coin = new component(10, 10, "yellow", 10, 200);
-    score = new component("30px", "Consolas", "black", 280, 40, "text");
+    scoreBoard = new component("30px", "Consolas", "black", 280, 40, "text");
   }
 
-  function component(width, height, color, x, y, type)
-  {
-    this.type = type;
-    this.gamearea = myGameArea;
-    this.width = width;
-    this.height = height;
-    this.speedX = 0;
-    this.speedY = 0;
-    this.x = x;
-    this.y = y;
-    this.update = function()
+    function component(width, height, color, x, y, type)
+    {
+        this.type = type;
+        this.gamearea = myGameArea;
+        this.width = width;
+        this.height = height;
+        this.speedX = 0;
+        this.speedY = 0;
+        this.x = x;
+        this.y = y;
+        this.update = function()
     {
       ctx = myGameArea.context;
       if (this.type == "text")
@@ -62,7 +65,10 @@ var mainCanvas = document.createElement("canvas");
   }
 
   var myGameArea =
-  {
+  { 
+      score : 0,
+      isDead : false,
+      frameNo : 0,
       canvas : mainCanvas,
       start : function()
       {
@@ -70,7 +76,7 @@ var mainCanvas = document.createElement("canvas");
             this.canvas.height = 280;
             this.context = this.canvas.getContext("2d");
             document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-            this.interval = setInterval(updateGameArea, 20);
+            this.interval = setInterval(updateGameArea, 10);
             window.addEventListener('keydown', function (e)
             {
               myGameArea.keys = (myGameArea.keys || []);
@@ -78,7 +84,7 @@ var mainCanvas = document.createElement("canvas");
             })
             window.addEventListener('keyup', function (e)
             {
-              myGameArea.keys[e.keyCode] = (e.type == "keydown");
+                myGameArea.keys[e.keyCode] = (e.type == "keydown");
             })
       },
       clear : function()
@@ -119,9 +125,46 @@ function animateDiv(){
 
     if (player.crashWith(enemy))
     {
-      myGameArea.stop();
+
+        // Ensures alert is only printed once
+        if (myGameArea.isDead == false) {
+            alert("You died. Press r to respawn.");
+            myGameArea.isDead = true;
+
+            // makes myGameArea.keys empty so player velocity is not carried over to next life
+            myGameArea.keys = [];
+        }
+
+        //myGameArea.stop();
+
+        // Checks if r was pressed, if it is player position is reset to original position
+        if (myGameArea.keys && myGameArea.keys[82]) {
+            player.x = playerXPos;
+            player.y = playerYPos;
+            myGameArea.frameNo = 0;
+            myGameArea.isDead = false;
+            myGameArea.score = 0;
+        }
+        
     } else
     {
+        // Detects player collision with coin
+        if (player.crashWith(coin)) {
+            myGameArea.score = myGameArea.score + 1; // Increments score if collision
+
+            // Gets boundary of where coin can spawn
+            var coinXBoundary = myGameArea.canvas.width - coin.width; 
+            var coinYBoundary = myGameArea.canvas.height - coin.height;
+
+            // Generates random coordinates within the boundaries
+            var newCoinX = Math.floor((Math.random() * coinXBoundary));
+            var newCoinY = Math.floor((Math.random() * coinYBoundary));
+
+            // Sets coin position
+            coin.x = newCoinX;
+            coin.y = newCoinY;
+
+        }
     myGameArea.clear();
     myGameArea.frameNo += 1;
     player.speedX = 0;
@@ -130,19 +173,19 @@ function animateDiv(){
     enemy.y += Math.floor((Math.random() * -0.5) + 0.5);
 
     // Are the boundaries of the player
-    var xBoundary = mainCanvas.width - player.width;
-    var yBoundary = mainCanvas.height - player.height;
+    var xBoundary = myGameArea.canvas.width - player.width;
+    var yBoundary = myGameArea.canvas.height - player.height;
 
+    // Checks for user input
     if (myGameArea.keys && myGameArea.keys[37] && player.x >= 0) {player.speedX = -1; }
     if (myGameArea.keys && myGameArea.keys[39] && player.x <= xBoundary) {player.speedX = 1; }
     if (myGameArea.keys && myGameArea.keys[38] && player.y >= 0) {player.speedY = -1; }
     if (myGameArea.keys && myGameArea.keys[40] && player.y <= yBoundary) {player.speedY = 1; }
-    //if (player.crashWith(coin)){<myGameArea.stop()};
     player.newPos();
     coin.update();
     player.update();
     enemy.update();
-    score.text="Score: " + myGameArea.frameNo;
-    score.update();
+    scoreBoard.text= "Score: " + myGameArea.score;
+    scoreBoard.update();
     }
   }
