@@ -104,16 +104,35 @@
       }
   }
 
+
+
+
+function makeNewPosition(){
+
+    // Get viewport dimensions (remove the dimension of the div)
+    var h = $(window).height() - 20;
+    var w = $(window).width() - 20;
+
+    var nh = Math.floor(Math.random() * h);
+    var nw = Math.floor(Math.random() * w);
+
+    return [nh,nw];
+
+}
+
+function animateDiv(){
+    var newq = makeNewPosition();
+    $('coin').animate({ top: newq[0], left: newq[1] }, function(){
+      animateDiv();
+    });
+
+
   function updateGameArea()
   {
-    if(player.x > 100 && player.y <= 100)
-    {
-    player.color = "black";
-    }
+
     if (player.crashWith(enemy))
     {
       myGameArea.stop();
-      myGameArea.frameNo + 1;
     } else
     {
       myGameArea.clear();
@@ -126,6 +145,7 @@
       if (myGameArea.keys && myGameArea.keys[39]) {player.speedX = 1; }
       if (myGameArea.keys && myGameArea.keys[38]) {player.speedY = -1; }
       if (myGameArea.keys && myGameArea.keys[40]) {player.speedY = 1; }
+      //if (player.crashWith(coin)){<myGameArea.stop()};
       player.newPos();
       coin.update();
       player.update();
