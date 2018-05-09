@@ -1,4 +1,4 @@
-var player, enemy, coin, score, mySound;
+var player, enemy, coin, score, mySound, deathScreen;
 
 // Creates canvas
 var mainCanvas = document.createElement("canvas");
@@ -6,14 +6,18 @@ var mainCanvas = document.createElement("canvas");
 var playerXPos = 10;
 var playerYPos = 120;
 
+var enemyXPos = 200;
+var enemyYPos = 200;
+
   function startGame()
   {
     myGameArea.start();
     player = new component(20, 20, "green", playerXPos, playerYPos);
     mySound = new sound("BFM.mp3");
-    enemy = new component(25, 25, "red", 20, 150);
+    enemy = new component(25, 25, "red", enemyXPos, enemyYPos);
     coin = new component(10, 10, "yellow", 10, 200);
     scoreBoard = new component("30px", "Consolas", "black", 280, 40, "text");
+    deathScreen = new component(100, 50, "black", 10, 200, "text");
   }
 
     function component(width, height, color, x, y, type)
@@ -129,19 +133,14 @@ function animateDiv(){
     if (player.crashWith(enemy))
     {
 
-        // Ensures alert is only printed once
-        if (myGameArea.isDead == false) {
-            alert("You died. Press r to respawn.");
-            myGameArea.isDead = true;
-
-            // makes myGameArea.keys empty so player velocity is not carried over to next life
-            myGameArea.keys = [];
-        }
-
-        // Checks if r was pressed, if it is player position is reset to original position
+        deathScreen.text = "You died. Press r to respawn.";
+        deathScreen.update();
+       
         if (myGameArea.keys && myGameArea.keys[82]) {
             player.x = playerXPos;
             player.y = playerYPos;
+            enemy.x = enemyXPos;
+            enemy.y = enemyYPos;
             myGameArea.frameNo = 0;
             myGameArea.isDead = false;
             myGameArea.score = 0;
