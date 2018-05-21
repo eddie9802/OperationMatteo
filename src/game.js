@@ -9,7 +9,7 @@ var enemyYPos = 200;
 $(function() {
     RenderEngine.init(); // Sets up 2D canvas
     initGamePieces(); // Creates all game objects
-    Game();
+    Game(); // Contains the game loop and game related variables
 });
 
 // Creates all game objects and places most on canvas
