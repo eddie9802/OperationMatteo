@@ -38,7 +38,7 @@ var Game = function()
     let isDead = false;
     let frameNo = 0;
     let velocity = [1, -1, 0]; // Contains all the speeds components can be
-    var keys = []; // Stores all the keys that have been pressed
+    let keys = []; // Stores all the keys that have been pressed
 
     setInterval(function gameLoop()
     {
