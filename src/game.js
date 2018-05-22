@@ -18,7 +18,7 @@ function initGamePieces()
     player = new component(20, 20, "green", playerXPos, playerYPos);
     enemy = new component(25, 25, "red", enemyXPos, enemyYPos);
     coin = new component(10, 10, "yellow", 10, 200);
-    scoreBoard = new component("30px", "Consolas", "black", 280, 40, "text");
+    scoreBoard = new component("30px", "Consolas", "black", 400, 40, "text");
     deathScreen = new component(100, 50, "black", 10, 200, "text");
 
     // Places player, enemy and coin objects on canvas
