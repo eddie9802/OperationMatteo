@@ -18,8 +18,8 @@ function initGamePieces()
     player = new component(20, 20, "green", playerXPos, playerYPos);
     enemy = new component(25, 25, "red", enemyXPos, enemyYPos);
     coin = new component(10, 10, "yellow", 10, 200);
-    scoreBoard = new component("30px", "Consolas", "black", 400, 40, "text");
-    deathScreen = new component(100, 50, "black", 10, 200, "text");
+    scoreBoard = new component("30px", "Consolas", "black", 1000, 40, "text");
+    deathScreen = new component(100, 50, "red", 300, 200, "text");
 
     // Places player, enemy and coin objects on canvas
     RenderEngine.update(player);
@@ -134,7 +134,7 @@ var Game = function()
     {
 
         // Presents death message to user
-        deathScreen.text = "You died. Press r to respawn.";
+        deathScreen.text = "You died! Press the R key to respawn.";
         RenderEngine.update(deathScreen);
         
         if (keys[82]) { // If r is pressed game components are reset
